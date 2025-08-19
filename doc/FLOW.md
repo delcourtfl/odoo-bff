@@ -1,0 +1,17 @@
+- Choose ticket
+- Find version
+- Create Db / config for given version
+- Try to replicate the issue
+- Store db when issue is found (just before trigger)
+- Explain the actions needed to reproduce
+- Find the issue origin
+- Find a fix
+- Write a test which fails without the fix and pass with it
+- Update branch with proper description
+- Create commit message explaining what is happening and what you did
+- Create PR wiht the commit
+- Ask BF team to review it
+- Ask R&D team to review it
+- Forward it to the next version and so on
+- Fix incoming issues during FW (cherry-pick issue, merge conflict, version issue...)
+- Start again

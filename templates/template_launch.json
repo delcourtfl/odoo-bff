@@ -1,0 +1,25 @@
+{
+	"version": "0.0.0",
+	"configurations": [
+		{
+			"name": "Odoo Run",
+			"type": "debugpy",
+			"request": "launch",
+			"program": "",
+			"cwd": "",
+			"args": [],
+			"variablePresentation": {},
+			"console": "integratedTerminal"
+		},
+		{
+            "name": "Odoo Test",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "",
+			"cwd": "",
+            "args": [],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+	]
+}

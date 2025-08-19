@@ -1,0 +1,24 @@
+Templates Commit:
+
+https://www.odoo.com/documentation/18.0/contributing/development/git_guidelines.html
+
+________________________________________________________________________________________
+
+[FIX] module_name: short_description_of_action
+
+**Steps to reproduce:**
+- Step 1
+- Step 2
+- ...
+
+**Issue:**
+Describe what caused the bug (e.g., logic error, missing null check, race condition).
+
+**Fix:**
+Describe what you changed and why it resolves the issue.
+Include any side effects, new behavior, or edge cases handled.
+
+opw-xxxxxxx
+
+________________________________________________________________________________________
+

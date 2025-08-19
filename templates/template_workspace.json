@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "tickets/${TICKET_ID}/"
+		},
+		{
+			"path": "utils"
+		},
+		{
+			"path": "odoo-bff"
+		}
+	],
+	"settings": {}
+}
