@@ -8,6 +8,23 @@ set -e  # Exit on any error
 # Note) Make the script executable and create an alias for global access:
 #   `alias opw='/home/odoo/GitHub/odoo/odoo-bff/opw.sh'`
 #   `chmod +x /home/odoo/GitHub/odoo/odoo-bff/opw.sh`
+#   or make it as a function in .bashrc
+# ```
+# opw() {
+#     /home/odoo/GitHub/odoo/odoo-bff/opw.sh "$@" | tee /tmp/.opw_out
+#     status=${PIPESTATUS[0]}
+#     if [ $status -ne 0 ]; then
+#         echo "opw.sh failed with exit code $status"
+#         return $status
+#     fi
+#     last_line=$(tail -n1 /tmp/.opw_out)
+#     if [ ! -d "$last_line" ]; then
+#         echo "Last line is not a valid directory: $last_line"
+#         return 1
+#     fi
+#     cd "$last_line" || return
+# }
+# ```
 #
 # -----------------------------------------------------------------------------
 # Functions
@@ -228,6 +245,8 @@ jq --arg ticket "tickets/${TICKET_ID}/" '
 
 # -----------------------------------------------------------------------------
 
-echo "Go to : ${TICKET_OC_PATH}"
-
 echo "Ticket ${TICKET_ID} is ready!"
+
+echo "Go to :"
+
+echo "${TICKET_OC_PATH}"
