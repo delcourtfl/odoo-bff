@@ -1,0 +1,13 @@
+# opw completion
+# source in .bashrc or (even better)
+# add it to /usr/share/bash-completion/completions/
+# or ~/.local/share/bash-completion/completions/
+
+_tickets() {
+    local cur ids
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    ids=$(ls -1 "$TICKETS_PATH" 2>/dev/null)
+    COMPREPLY=( $(compgen -W "${ids}" -- "${cur}") )
+}
+
+complete -F _tickets opw

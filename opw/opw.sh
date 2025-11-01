@@ -4,28 +4,7 @@ set -e  # Exit on any error
 # Manage git worktrees when debugging tickets:
 # Check, create if missing, and setup VSCode configs.
 # -----------------------------------------------------------------------------
-# [Dependency needed to manipulate json] jq : `sudo apt-get install jq``
-# Note) Make the script executable and create an alias for global access:
-#   `alias opw='/home/odoo/GitHub/odoo/odoo-bff/opw.sh'`
-#   `chmod +x /home/odoo/GitHub/odoo/odoo-bff/opw.sh`
-#   or make it as a function in .bashrc
-# ```
-# opw() {
-#     /home/odoo/GitHub/odoo/odoo-bff/opw.sh "$@" | tee /tmp/.opw_out
-#     status=${PIPESTATUS[0]}
-#     if [ $status -ne 0 ]; then
-#         echo "opw.sh failed with exit code $status"
-#         return $status
-#     fi
-#     last_line=$(tail -n1 /tmp/.opw_out)
-#     if [ ! -d "$last_line" ]; then
-#         echo "Last line is not a valid directory: $last_line"
-#         return 1
-#     fi
-#     cd "$last_line" || return
-# }
-# ```
-#
+
 # -----------------------------------------------------------------------------
 # Functions
 # -----------------------------------------------------------------------------
@@ -92,6 +71,10 @@ to_json_array() {
 # -----------------------------------------------------------------------------
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+# parent folder as default path
+ODOO_BFF_PATH="$(realpath "$SCRIPT_DIR/..")"
+# sourcing configuration file
+source "$ODOO_BFF_PATH/bff.conf"
 
 # Get ticket opw id
 if [[ $# -lt 1 ]]; then
@@ -114,19 +97,12 @@ while [[ $# -gt 0 ]]; do
 done
 
 # parameters
-NAME="defl"
 DB_NAME="bugfix-${TICKET_ID}"
 LOG_LEVEL="warn"
 DEV_MODE="xml"
 
-ODOO_PATH="$HOME/GitHub/odoo"
-WORKSPACE_PATH="$ODOO_PATH/odoo.code-workspace"
-# odoo paths
-ODOO_OC_PATH="$ODOO_PATH/odoo"
-ODOO_OE_PATH="$ODOO_PATH/enterprise"
-
 # ticket paths
-TICKET_PATH="$ODOO_PATH/tickets/${TICKET_ID}"
+TICKET_PATH="$TICKETS_PATH/$TICKET_ID"
 TICKET_OC_PATH="$TICKET_PATH/odoo"
 TICKET_OE_PATH="$TICKET_PATH/enterprise"
 PROGRAM_PATH="$TICKET_OC_PATH/odoo-bin"
@@ -185,7 +161,7 @@ mkdir -p "${VSCODE_PATH}"
 # Only generate launch.json if it does not exist yet
 if [ ! -f "${VSCODE_PATH}/launch.json" ]; then
 
-    TEMPLATE_LAUNCH="$SCRIPT_DIR/templates/template_launch.json"
+    TEMPLATE_LAUNCH="$ODOO_BFF_PATH/templates/template_launch.json"
     # Generate launch.json from template and update args and program
     jq --arg program "$PROGRAM_PATH" \
         --arg cwd_ticket "$TICKET_OC_PATH" \
@@ -236,11 +212,11 @@ if [ ! -f "${VSCODE_PATH}/launch.json" ]; then
     echo "Generated launch.json:"
 fi
 
-TEMPLATE_WORKSPACE="$SCRIPT_DIR/templates/template_workspace.json"
+TEMPLATE_WORKSPACE="$ODOO_BFF_PATH/templates/template_workspace.json"
 # Switch ticket_id in workspace
-jq --arg ticket "tickets/${TICKET_ID}/" '
+jq --arg ticket "${TICKETS_FOLDER}/${TICKET_ID}/" '
   .folders |=
-    (map(select(.path | startswith("tickets/") | not)) + [{"path": $ticket}])
+    (map(select(.path | startswith("${TICKETS_FOLDER}/") | not)) + [{"path": $ticket}])
 ' ${TEMPLATE_WORKSPACE} > ${WORKSPACE_PATH}
 
 # -----------------------------------------------------------------------------

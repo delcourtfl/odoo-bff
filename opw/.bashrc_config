@@ -1,0 +1,15 @@
+# Allow opw to move parent shell to ticket directory
+opw() {
+    $OPW_PATH "$@" | tee /tmp/.opw_out
+    status=${PIPESTATUS[0]}
+    if [ $status -ne 0 ]; then
+        echo "opw.sh failed with exit code $status"
+        return $status
+    fi
+    last_line=$(tail -n1 /tmp/.opw_out)
+    if [ ! -d "$last_line" ]; then
+        echo "Last line is not a valid directory: $last_line"
+        return 1
+    fi
+    cd "$last_line" || return
+}

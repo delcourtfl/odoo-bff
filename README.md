@@ -1,6 +1,10 @@
 # Odoo Bugfix Flow
 
 `opw.sh` - script to manage **Git worktrees** for Odoo tickets and configure VSCode for development and debugging.
+sync -
+forwardport -
+mergefix -
+pickfix -
 
 ---
 
