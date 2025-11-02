@@ -1,7 +1,7 @@
 {
 	"folders": [
 		{
-			"path": "tickets/${TICKET_ID}/"
+			"path": "${TICKETS_FOLDER}/${TICKET_ID}/"
 		},
 		{
 			"path": "utils"

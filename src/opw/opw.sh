@@ -72,7 +72,7 @@ to_json_array() {
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 # parent folder as default path
-ODOO_BFF_PATH="$(realpath "$SCRIPT_DIR/..")"
+ODOO_BFF_PATH="$(realpath "$SCRIPT_DIR/../..")"
 # sourcing configuration file
 source "$ODOO_BFF_PATH/bff.conf"
 
@@ -98,7 +98,6 @@ done
 
 # parameters
 DB_NAME="bugfix-${TICKET_ID}"
-LOG_LEVEL="warn"
 DEV_MODE="xml"
 
 # ticket paths
@@ -168,14 +167,12 @@ if [ ! -f "${VSCODE_PATH}/launch.json" ]; then
         --arg db_name "$DB_NAME" \
         --arg addons_path "$ADDONS_PATH" \
         --arg dev_mode "$DEV_MODE" \
-        --arg log_level "$LOG_LEVEL" \
         '
         def odoo_run_args:
             [
             "-d", $db_name,
             "--addons-path=" + $addons_path,
             "--dev=" + $dev_mode,
-            "--log-level=" + $log_level,
             "--http-port", "8069",
             "--smtp=0.0.0.0:1025",
             "--smtp-port=0",
@@ -188,7 +185,6 @@ if [ ! -f "${VSCODE_PATH}/launch.json" ]; then
             "-d", $db_name,
             "--addons-path=" + $addons_path,
             "--dev=" + $dev_mode,
-            "--log-level=" + $log_level,
             "-i", "",
             "--test-tags", "",
             "--stop-after-init"

@@ -1,41 +1,20 @@
 # Odoo Bugfix Flow
 
-`opw.sh` - script to manage **Git worktrees** for Odoo tickets and configure VSCode for development and debugging.
-sync -
-forwardport -
-mergefix -
-pickfix -
+Small repository to regroup information and scripts used for odoo bug fixing.
+
+- `opw.sh` - script to manage **Git worktrees** for Odoo tickets and configure VSCode for development and debugging.
+- `sce.sh` - script to sync community enterprise branches.
+- `sfw.sh` - script to sync forwardport branches.
+- `fmg.sh` - script to fix merge conflict.
+- `fpk.sh` - script to fix cherrypick issue.
+- `bff.sh` - regroup every available command and list them.
 
 ---
 
-## Features
+## Repository Structure
 
-- Checks if Odoo worktrees exist for a given ticket.
-- Creates missing worktrees based on a branch or base version.
-- Optionally renames worktree branches.
-- Automatically generates VSCode `.vscode/launch.json` for debugging.
-- Updates the Odoo workspace file with the current ticket folder.
-
----
-
-## Prerequisites
-
-- `git` installed
-- `jq` for JSON manipulation:
-
-```bash
-sudo apt-get install jq
-```
-
-## Usage
-
-```bash
-bash opw.sh <ticket_id> [options]
-```
-
-## Options
-
-```
--b, --branch <branch_name>: Use an existing branch for the ticket.
--r, --rename <new_branch_name>: Rename the ticket worktree branch.
-```
+Each command has its own folder with:
+- command script
+- bash completion
+- bashrc profile config
+- description/documentation in markdown

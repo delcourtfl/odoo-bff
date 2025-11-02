@@ -3,8 +3,8 @@ set -e
 # [Dependency needed to manipulate json] jq : `sudo apt-get install jq``
 # Note) For each command
 #   Make the script executable and create an alias for global access:
-#   `alias opw='/home/odoo/GitHub/odoo/odoo-bff/opw.sh'`
-#   `chmod +x /home/odoo/GitHub/odoo/odoo-bff/opw.sh`
+#   `alias opw='/home/odoo/GitHub/odoo/odoo-bff/src/opw/opw.sh'`
+#   `chmod +x /home/odoo/GitHub/odoo/odoo-bff/src/opw/opw.sh`
 #   or make it as a function in .bashrc to avoid the alias
 #   or use the install script to do everything at once
 
@@ -28,11 +28,11 @@ source "$SCRIPT_DIR/bff.conf"
 # -----------------------------------------------------------------------------
 # OPW
 # -----------------------------------------------------------------------------
-cd "opw/"
+cd "$SCRIPT_DIR/src/opw/"
 if ! grep -q 'opw()' "$BASHRC_FILE"; then
     echo "Adding opw command to $BASHRC_FILE"
     echo "" >> "$BASHRC_FILE"
-    OPW_PATH="$SCRIPT_DIR/opw/opw.sh"
+    OPW_PATH="$SCRIPT_DIR/src/opw/opw.sh"
     export OPW_PATH
     envsubst '$OPW_PATH' < .bashrc_config >> "$BASHRC_FILE"
 fi
