@@ -70,15 +70,17 @@ to_json_array() {
 # Main script
 # -----------------------------------------------------------------------------
 
+CALL_DIR="$PWD"
+
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-# parent folder as default path
+# Parent folder as default path
 ODOO_BFF_PATH="$(realpath "$SCRIPT_DIR/../..")"
-# sourcing configuration file
+# Sourcing configuration file
 source "$ODOO_BFF_PATH/bff.conf"
 
 # Get ticket opw id
 if [[ $# -lt 1 ]]; then
-    echo "Usage: $0 <ticket_id> [other options: -b branch_to_use, -r new_branch_name]"
+    log "Usage: $0 <ticket_id> [other options: -b branch_to_use, -r new_branch_name]"
     exit 1
 fi
 TICKET_ID="$1"; shift
@@ -92,15 +94,15 @@ while [[ $# -gt 0 ]]; do
     case $1 in
         -b|--branch)     BRANCH="$2"; shift 2 ;;
         -r|--rename)     RENAME_BRANCH="$2"; shift 2 ;;
-        *) echo "Unknown option $1"; exit 1;;
+        *) log "Unknown option $1"; exit 1;;
     esac
 done
 
-# parameters
+# Parameters
 DB_NAME="bugfix-${TICKET_ID}"
 DEV_MODE="xml"
 
-# ticket paths
+# Ticket paths
 TICKET_PATH="$TICKETS_PATH/$TICKET_ID"
 TICKET_OC_PATH="$TICKET_PATH/odoo"
 TICKET_OE_PATH="$TICKET_PATH/enterprise"
@@ -114,28 +116,28 @@ go_to_worktree "$TICKET_OC_PATH" "$ODOO_OC_PATH" && oc_ok=true
 go_to_worktree "$TICKET_OE_PATH" "$ODOO_OE_PATH" && oe_ok=true
 
 if [[ $oc_ok == true && $oe_ok == true ]]; then
-    echo "Both OC and OE worktrees OK"
+    log "Both OC and OE worktrees OK"
     if [[ -n "$RENAME_BRANCH" ]]; then
         rename_worktree_branch "$TICKET_OC_PATH" "$TICKET_OE_PATH" "$RENAME_BRANCH"
     fi
     if [[ -n "$BRANCH" ]]; then
-        echo "-b branch parameter was ignored as worktree exists"
+        log "-b branch parameter was ignored as worktree exists"
     fi
 else
-    echo "At least one worktree missing or not ready..."
+    log "At least one worktree missing or not ready..."
     VERSION=""
 
     if [[ -z "$BRANCH" ]]; then
-        # no branch/version given
+        # No branch/version given
         while [[ -z "$VERSION" ]]; do
             read -rp "Enter base version: " VERSION
-            [[ -z "$VERSION" ]] && echo "Version cannot be empty!"
+            [[ -z "$VERSION" ]] && log "Version cannot be empty!"
         done
         BRANCH="${VERSION}-opw-${TICKET_ID}--${NAME}"
-        echo "Base version: $VERSION"
+        log "Base version: $VERSION"
     else
         VERSION="${BRANCH%%-opw-*}"
-        echo "Base version: $VERSION"
+        log "Base version: $VERSION"
     fi
 
     # For OC
@@ -205,7 +207,7 @@ if [ ! -f "${VSCODE_PATH}/launch.json" ]; then
         )
         ' "${TEMPLATE_LAUNCH}" > "${VSCODE_PATH}/launch.json"
 
-    echo "Generated launch.json:"
+    log "Generated launch.json:"
 fi
 
 TEMPLATE_WORKSPACE="$ODOO_BFF_PATH/templates/template_workspace.json"
@@ -217,8 +219,12 @@ jq --arg ticket "${TICKETS_FOLDER}/${TICKET_ID}/" '
 
 # -----------------------------------------------------------------------------
 
-echo "Ticket ${TICKET_ID} is ready!"
+log "Ticket ${TICKET_ID} is ready!"
+log "Go to :"
 
-echo "Go to :"
-
-echo "${TICKET_OC_PATH}"
+# Back to enterprise if called from it
+if [[ "$CALL_DIR" == "${TICKET_OE_PATH}"* ]]; then
+    echo "${TICKET_OE_PATH}"
+else
+    echo "${TICKET_OC_PATH}"
+fi
