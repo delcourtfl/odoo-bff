@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e  # Exit on any error
 # url shortcut for odoo utils
 
 open_q() {
@@ -49,6 +50,13 @@ fi
 
 shortcut="$1"
 shift
+
+# Else add
+#  Shell odoo
+#  Venv setup with activate/deactivate
+#  Quick list of modified files
+# Small python file easy to run for test of syntax ?
+# mailgate ! send from file
 
 case "$shortcut" in
     odoo)

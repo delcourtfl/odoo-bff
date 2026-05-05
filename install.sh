@@ -35,12 +35,28 @@ if ! grep -q 'opw()' "$BASHRC_FILE"; then
     OPW_PATH="$SCRIPT_DIR/src/opw/opw.sh"
     export OPW_PATH
     envsubst '$OPW_PATH' < .bashrc_config >> "$BASHRC_FILE"
+
+    # add exe permission on opw
+    chmod +x $OPW_PATH
 fi
 
 export TICKETS_PATH
 echo "Adding opw completion to $LOCAL_COMPLETION/opw"
 envsubst '$TICKETS_PATH' < .bash_completion > "$LOCAL_COMPLETION/opw"
-# add exe permission on opw
-chmod +x opw.sh
+
+# -----------------------------------------------------------------------------
+# OSC
+# -----------------------------------------------------------------------------
+cd "$SCRIPT_DIR/src/osc/"
+if ! grep -q 'osc()' "$BASHRC_FILE"; then
+    echo "Adding osc command to $BASHRC_FILE"
+    echo "" >> "$BASHRC_FILE"
+    OSC_PATH="$SCRIPT_DIR/src/osc/shortcut.sh"
+    export OSC_PATH
+    envsubst '$OSC_PATH' < .bashrc_config >> "$BASHRC_FILE"
+
+    # add exe permission on osc
+    chmod +x $OSC_PATH
+fi
 
 echo "Installation complete!"

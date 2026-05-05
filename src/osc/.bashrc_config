@@ -1,0 +1,8 @@
+osc() {
+    $OSC_PATH "$@" | tee /tmp/.osc_out
+    status=${PIPESTATUS[0]}
+    if [ $status -ne 0 ]; then
+        echo "shortcut.sh failed with exit code $status"
+        return $status
+    fi
+}
