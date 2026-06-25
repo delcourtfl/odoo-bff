@@ -31,7 +31,7 @@ create_worktree() {
     local version="$4"
     cd "${git_path}"
 
-    git fetch origin
+    git fetch origin "$version"
     # Check branch locally
     if git show-ref --verify --quiet "refs/heads/$branch"; then
         echo "Using existing branch $branch"
@@ -63,6 +63,24 @@ to_json_array() {
         echo '[]'
     else
         printf '%s\n' "$@" | jq -R . | jq -s .
+    fi
+}
+
+ensure_branch_from_remote() {
+    local repo_path="$1"
+    local branch="$2"
+
+    cd "$repo_path" || return 1
+
+    if git show-ref --verify --quiet "refs/heads/$branch"; then
+        log "(Local branch exists in '$repo_path')"
+    else
+        if git ls-remote --exit-code --heads dev "$BRANCH"; then
+            git fetch dev "$branch:$branch"
+            log "(Fetched branch from dev in '$repo_path')"
+        else
+            log "(Branch will be created in '$repo_path')"
+        fi
     fi
 }
 
@@ -138,6 +156,9 @@ else
     else
         VERSION="${BRANCH%%-opw-*}"
         log "Base version: $VERSION"
+        # Need to check oc and oe for existing branches in dev
+        ensure_branch_from_remote "$ODOO_OC_PATH" "$BRANCH"
+        ensure_branch_from_remote "$ODOO_OE_PATH" "$BRANCH"
     fi
 
     # For OC

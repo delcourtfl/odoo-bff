@@ -43,6 +43,18 @@ open_pr() {
     open_q "https://github.com/odoo/$repo_name/pull/$id"
 }
 
+# Need to test this further
+reset_db() {
+    local db="$1"
+    psql $db -c "UPDATE res_users SET login='admin' where id=2;"
+    psql $db -c "UPDATE res_users SET password=login;"
+    psql $db -c "UPDATE ir_config_parameter SET value='2999-12-31' where key='database.expiration_date'"
+    psql $db -c "DELETE from ir_config_parameter where key='database.expiration_reason'"
+    # psql $db -c "UPDATE ir_config_parameter SET value = '$(cat /proc/sys/kernel/random/uuid)' WHERE key = 'database.uuid';"
+    # psql $db -c "UPDATE ir_cron SET active=false"
+    # psql $db -c "UPDATE ir_mail_server SET active=false;"
+}
+
 if [[ $# -lt 1 ]]; then
     echo "Usage: $0 <tag> [<optional parameters>]"
     exit 1
