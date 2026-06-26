@@ -8,6 +8,9 @@ source "$ODOO_BFF_PATH/bff.conf"
 log "Ticket folders with OPW IDs but no remote branches containing the OPW ID:"
 log "-----------------------------------------------------------------------"
 
+remote_oc_branches=$(git -C "$ODOO_OC_PATH" branch -r)
+remote_oe_branches=$(git -C "$ODOO_OE_PATH" branch -r)
+
 # Folder containing ticket folders
 for folder in "$TICKETS_PATH"/*; do
     [ -d "$folder" ] || continue
@@ -17,10 +20,10 @@ for folder in "$TICKETS_PATH"/*; do
     opw_id="${opw_id%%[-_]*}"
 
     # Check Odoo Community repo for remote branches with the OPW ID
-    odoo_matches=$(git -C "$ODOO_OC_PATH" branch -r | grep "opw-$opw_id" | grep "$NAME")
+    odoo_matches=$(echo "$remote_oc_branches" | grep "opw-$opw_id" | grep "$NAME" || true)
 
     # Check Enterprise repo for remote branches with the OPW ID
-    enterprise_matches=$(git -C "$ODOO_OE_PATH" branch -r | grep "opw-$opw_id" | grep "$NAME")
+    enterprise_matches=$(echo "$remote_oe_branches" | grep "opw-$opw_id" | grep "$NAME" || true)
 
     # If no matches in either repo, print the ticket folder
     if [ -z "$odoo_matches" ] && [ -z "$enterprise_matches" ]; then
