@@ -104,6 +104,7 @@ fi
 TICKET_ID="$1"; shift
 BRANCH=""
 RENAME_BRANCH=""
+VERSION=""
 
 # Optional:
 # -b branch (create with existing branch)
@@ -112,6 +113,7 @@ while [[ $# -gt 0 ]]; do
     case $1 in
         -b|--branch)     BRANCH="$2"; shift 2 ;;
         -r|--rename)     RENAME_BRANCH="$2"; shift 2 ;;
+        -v|--version)    VERSION="$2"; shift 2 ;;
         *) log "Unknown option $1"; exit 1;;
     esac
 done
@@ -143,7 +145,6 @@ if [[ $oc_ok == true && $oe_ok == true ]]; then
     fi
 else
     log "At least one worktree missing or not ready..."
-    VERSION=""
 
     if [[ -z "$BRANCH" ]]; then
         # No branch/version given
@@ -154,11 +155,19 @@ else
         BRANCH="${VERSION}-opw-${TICKET_ID}--${NAME}"
         log "Base version: $VERSION"
     else
-        VERSION="${BRANCH%%-opw-*}"
+        if [[ -z "$VERSION" ]]; then
+            VERSION="${BRANCH%%-opw-*}"
+        fi
         log "Base version: $VERSION"
         # Need to check oc and oe for existing branches in dev
         ensure_branch_from_remote "$ODOO_OC_PATH" "$BRANCH"
         ensure_branch_from_remote "$ODOO_OE_PATH" "$BRANCH"
+    fi
+
+    # Version check
+    if ! git for-each-ref refs/remotes/origin --format='%(refname:strip=3)' | grep -qx "$VERSION"; then
+        log "Error: VERSION '$VERSION' not found in origin branches"
+        exit 1
     fi
 
     # For OC
